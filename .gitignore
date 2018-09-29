@@ -31,6 +31,7 @@ sdl2_rendercopyex_demo
 
 # Debug files
 *.dSYM/
+Makefile
 
 # MSVC
 *.vcxproj
@@ -47,6 +48,7 @@ cmake_install.cmake
 *.dir/
 
 # OS X
+.DS_Store
 CMakeScripts/
 Debug/
 *.xcodeproj
