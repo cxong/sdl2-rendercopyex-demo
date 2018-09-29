@@ -3,6 +3,23 @@
 
 #include <SDL_image.h>
 
+int render(
+	SDL_Renderer *renderer, SDL_Surface *s, SDL_Texture *t,
+	int x, int y, double angle, double sx, double sy, SDL_RendererFlip flip)
+{
+	SDL_Rect dst;
+	int res;
+	dst.x = x - (s->w * sx) / 2;
+	dst.y = y - (s->h * sy) / 2;
+	dst.w = (int)(s->w * sx);
+	dst.h = (int)(s->h * sy);
+	res = SDL_RenderCopyEx(renderer, t, NULL, &dst, angle, NULL, flip);
+	if (res != 0)
+	{
+		return res;
+	}
+	return SDL_RenderDrawPoint(renderer, x, y);
+}
 
 int main(int argc, char *argv[])
 {
@@ -10,8 +27,8 @@ int main(int argc, char *argv[])
 	SDL_Texture *t = NULL;
 	SDL_Window *window = NULL;
 	SDL_Renderer *renderer = NULL;
-	int width = 1024;
-	int height = 768;
+	int width = 640;
+	int height = 320;
 
 	// Init SDL
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -53,11 +70,33 @@ int main(int argc, char *argv[])
 		goto bail;
 	}
 
-	// Blit the texture to screen
-	if (SDL_RenderCopyEx(renderer, t, NULL, NULL, 0, NULL, SDL_FLIP_NONE) != 0)
+	// Initialise render color (for dots)
+	if (SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255) != 0)
 	{
-		printf("Failed to blit surface: %s\n", SDL_GetError());
+		printf("Failed to set render draw color: %s\n", SDL_GetError());
 		goto bail;
+	}
+
+	// Blit the texture to screen
+	for (int i = 0; i < 5; i++)
+	{
+		int x = 50 + 100 * i;
+		double angle = 90 / 4 * i;
+		if (render(renderer, s, t, x, 50, angle, 1.0, 1.0, SDL_FLIP_NONE) != 0)
+		{
+			printf("Failed to blit surface: %s\n", SDL_GetError());
+			goto bail;
+		}
+		if (render(renderer, s, t, x, 150, angle, 0.5, 1.5, SDL_FLIP_NONE) != 0)
+		{
+			printf("Failed to blit surface: %s\n", SDL_GetError());
+			goto bail;
+		}
+		if (render(renderer, s, t, x, 250, angle, 1.0, 1.0, SDL_FLIP_HORIZONTAL) != 0)
+		{
+			printf("Failed to blit surface: %s\n", SDL_GetError());
+			goto bail;
+		}
 	}
 
 	// Display
