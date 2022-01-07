@@ -34,12 +34,12 @@ sdl2_rendercopyex_demo
 Makefile
 
 # MSVC
-*.vcxproj
-*.vcxproj.filters
+*.vcxproj*
 *.opensdf
 *.sdf
 *.sln
 Win32/
+.vs/
 
 # CMake
 CMakeCache.txt
